@@ -7,6 +7,7 @@ public class Player {
 	private int speed;
 	private int hp;
 	private int powerup;
+	private int level;
 
 	public Player(int x, int y, int id, int speed, int hp) {
 		super();
@@ -15,6 +16,15 @@ public class Player {
 		this.id = id;
 		this.speed = speed;
 		this.hp = hp;
+		this.level = 1;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
 	}
 
 	public int getX() {
