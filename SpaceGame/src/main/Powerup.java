@@ -1,9 +1,10 @@
+package main;
 
-public class PowerUp {
+public class Powerup {
 	private String type;
 	private int duration;
 
-	public PowerUp(String type, int duration) {
+	public Powerup(String type, int duration) {
 		super();
 		this.type = type;
 		this.duration = duration;
