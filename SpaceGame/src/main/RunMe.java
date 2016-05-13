@@ -12,7 +12,7 @@ public class RunMe extends PApplet {
 	public void setup() {
 		size(sizeX, sizeY);
 		game.playerOne = new Player(this, 100, 100, 0, 0, 50.0, 50.0, 100, 1);
-		game.playerTwo = new Player(this, 200, 100, 0, 0, 50.0, 50.0, 100, 1);
+		game.playerTwo = new Player(this, 900, 500, 0, 0, 50.0, 50.0, 100, 1);
 	}
 
 	public void draw() {
@@ -23,12 +23,35 @@ public class RunMe extends PApplet {
 		game.playerTwo.draw();
 	}
 
-	public SpaceGame getGame() {
-		return game;
-	}
+	public void keyPressed() {
+		if (key == 'w') {
+			game.playerOne.setVelocity(90 - game.playerOne.getAngle(), 1);
+		}
+		if (key == 's') {
+			game.playerOne.setVelocity(90 - game.playerOne.getAngle(), 0);
+		}
 
-	public void setGame(SpaceGame game) {
-		this.game = game;
+		if (key == 'a') {
+			game.playerOne.rotate(-5);
+		}
+		if (key == 'd') {
+			game.playerOne.rotate(5);
+
+		}
+		if (key == CODED) {
+			if (keyCode == UP) {
+				game.playerTwo.setVelocity(90 - game.playerTwo.getAngle(), 1);
+			}
+			if (keyCode == DOWN) {
+				game.playerTwo.setVelocity(90 - game.playerTwo.getAngle(), 0);
+			}
+			if (keyCode == LEFT) {
+				game.playerTwo.rotate(-5);
+			}
+			if (keyCode == RIGHT) {
+				game.playerTwo.rotate(5);
+			}
+		}
 	}
 
 	public int getSizeX() {

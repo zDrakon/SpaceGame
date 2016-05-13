@@ -3,7 +3,7 @@ package entities;
 import main.Powerup;
 import processing.core.PApplet;
 
-public class Player extends Thing {
+public class Player extends Entity {
 
 	private Powerup powerup;
 	private int level;

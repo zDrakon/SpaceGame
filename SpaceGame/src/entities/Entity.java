@@ -4,7 +4,7 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
 
-public class Thing {
+public class Entity {
 	protected PVector position, velocity, acceleration;
 
 	protected double angle;
@@ -53,7 +53,7 @@ public class Thing {
 	 * @param h
 	 *            object's height
 	 */
-	public Thing(PApplet papplet, double x, double y, double xspeed, double yspeed, double xacceleration,
+	public Entity(PApplet papplet, double x, double y, double xspeed, double yspeed, double xacceleration,
 			double yacceleration, double w, double h) {
 		this.p = papplet;
 		position = new PVector((float) x, (float) y);
@@ -69,7 +69,7 @@ public class Thing {
 		height = (float) h;
 	}
 
-	public Thing(PApplet p, double x, double y, double xspeed, double yspeed, double xacceleration,
+	public Entity(PApplet p, double x, double y, double xspeed, double yspeed, double xacceleration,
 			double yacceleration) {
 		this(p, x, y, xspeed, yspeed, xacceleration, yacceleration, 50.0, 50.0);
 	}
@@ -286,7 +286,7 @@ public class Thing {
 		return t;
 	}
 
-	public boolean isHitting(Thing t) {
+	public boolean isHitting(Entity t) {
 		if (t.id == id)
 			return false; // we can't hit ourselves
 
@@ -319,7 +319,7 @@ public class Thing {
 	 * @return true if this object will hit the other object in the next time
 	 *         step. False otherwise.
 	 */
-	public boolean willHitNextStep(Thing other) {
+	public boolean willHitNextStep(Entity other) {
 		velocity.add(acceleration);
 		position.add(velocity);
 		boolean willHit = isHitting(other);
@@ -458,5 +458,9 @@ public class Thing {
 
 	public int getCenterY() {
 		return (int) (position.y + height / 2.0);
+	}
+
+	public void damageSelf(int damage) {
+		this.hp = this.hp - damage;
 	}
 }
