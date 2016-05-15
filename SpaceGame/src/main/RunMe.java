@@ -10,7 +10,9 @@ import processing.core.PApplet;
 public class RunMe extends PApplet {
 
 	SpaceGame game = new SpaceGame();
-	HealthBar bars = new HealthBar(20, 500, 100, 15, 10);
+	HealthBar barOne = new HealthBar(20, 500, 100, 15, 10);
+	HealthBar barTwo = new HealthBar(420, 500, 100, 15, 10);
+
 	ArrayList<Projectile> bullitsOne;
 	ArrayList<Projectile> bullitsTwo;
 
@@ -18,16 +20,20 @@ public class RunMe extends PApplet {
 
 	public void setup() {
 		size(sizeX, sizeY);
-		bars.drawInitialHealthBar(game.playerOne, this);
+		barOne.drawInitialHealthBar(game.playerOne, this);
+		barOne.drawInitialHealthBar(game.playerTwo, this);
+
 		game.playerOne = new Player(this, 100, 100, 0, 0, 50.0, 50.0, 100, 2);
 		game.playerTwo = new Player(this, 100, 400, 0, 0, 50.0, 50.0, 100, 2);
+
 		bullitsOne = new ArrayList<Projectile>();
 		bullitsTwo = new ArrayList<Projectile>();
 	}
 
 	public void draw() {
 		background(255);
-		bars.update(game.playerOne, this);
+		barOne.update(game.playerOne, this);
+		barTwo.update(game.playerTwo, this);
 
 		checkMoveKeysPressed();
 		doBulletOneActions();
