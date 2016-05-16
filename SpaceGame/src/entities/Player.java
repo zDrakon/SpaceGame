@@ -8,13 +8,14 @@ public class Player extends Entity {
 	private Powerup powerup;
 	private int level;
 	private Projectile bullet;
-	private final int RELOADTIME = 5;
+	private final int RELOADTIME = 10;
 	private int reloadTimer;
 
-	public Player(PApplet app, double x, double y, double xSpeed, double ySpeed, double width, double height, int hp,
+	public Player(PApplet app, double x, double y, double xSpeed, double ySpeed, double width, double height, int maxHp,
 			int level) {
 		super(app, x, y, xSpeed, ySpeed, 0, 0, width, height);
-		this.hp = hp;
+		this.maxHp = maxHp;
+		this.currentHp = maxHp;
 		this.level = level;
 		this.reloadTimer = 0;
 
@@ -51,10 +52,18 @@ public class Player extends Entity {
 		if (this.reloadTimer >= this.RELOADTIME) {
 			reloadTimer = 0;
 			return true;
-		} else {
-			reloadTimer++;
-			return false;
 		}
+
+		return false;
+
+	}
+
+	public void countReloadTimer() {
+		reloadTimer++;
+	}
+
+	public void takeDamage(int amt) {
+		currentHp = currentHp - amt;
 	}
 
 }

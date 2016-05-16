@@ -4,7 +4,7 @@ public class Projectile extends Entity {
 
 	public Projectile(double x, double y, double xSpeed, double ySpeed, double width, double height) {
 		super(p, x, y, xSpeed, ySpeed, 0, 0, width, height);
-		this.hp = 100;
+		this.currentHp = 100;
 	}
 
 	public void setCenter(double x, double y) {
@@ -13,11 +13,11 @@ public class Projectile extends Entity {
 	}
 
 	public void countLifetime() {
-		this.hp--;
+		this.currentHp--;
 	}
 
 	public boolean isAlive() {
-		if (this.hp <= 0) {
+		if (this.currentHp <= 0) {
 			return false;
 		}
 		return true;

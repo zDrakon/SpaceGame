@@ -20,14 +20,16 @@ public class Entity {
 	protected float width;
 	protected float height;
 
-	protected int hp;
+	protected float maxHp;
 
-	public int getHp() {
-		return hp;
+	protected float currentHp;
+
+	public float getMaxHp() {
+		return maxHp;
 	}
 
-	public void setHp(int hp) {
-		this.hp = hp;
+	public float getHp() {
+		return currentHp;
 	}
 
 	/**
@@ -461,6 +463,6 @@ public class Entity {
 	}
 
 	public void damageSelf(int damage) {
-		this.hp = this.hp - damage;
+		this.currentHp = this.currentHp - damage;
 	}
 }
