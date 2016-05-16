@@ -7,8 +7,11 @@ import aesthetics.ShootCooldownBar;
 import entities.Player;
 import entities.Projectile;
 import processing.core.PApplet;
+import processing.core.PFont;
 
 public class RunMe extends PApplet {
+
+	String[] fontList = PFont.list();
 
 	SpaceGame game = new SpaceGame();
 	HealthBar barOne = new HealthBar(20, 500, 100, 15, 10);
@@ -39,7 +42,14 @@ public class RunMe extends PApplet {
 
 	public void draw() {
 		background(255);
+		if (game.getWinner() != 0) {
+			background(255);
+			text("GAME OVER", 500, 300);
+			return;
+		}
+
 		game.checkForWinner();
+
 		barOne.updateHealthBar(game.playerOne, this);
 		barTwo.updateHealthBar(game.playerTwo, this);
 
