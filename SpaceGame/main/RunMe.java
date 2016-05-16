@@ -14,16 +14,18 @@ public class RunMe extends PApplet {
 	String[] fontList = PFont.list();
 
 	SpaceGame game = new SpaceGame();
-	HealthBar barOne = new HealthBar(20, 500, 100, 15, 10);
-	HealthBar barTwo = new HealthBar(420, 500, 100, 15, 10);
+	HealthBar barOne = new HealthBar(20, 500, 100, 15, 10, 8);
+	HealthBar barTwo = new HealthBar(420, 500, 100, 15, 10, 8);
 
-	ShootCooldownBar shootOne = new ShootCooldownBar(800, 300, 100, 15, 10);
-	ShootCooldownBar shootTwo = new ShootCooldownBar(800, 450, 100, 15, 10);
+	Boolean[] pressedKeys;
+
+	ShootCooldownBar shootOne = new ShootCooldownBar(800, 300, 100, 15, 10, 8);
+	ShootCooldownBar shootTwo = new ShootCooldownBar(800, 450, 100, 15, 10, 8);
 
 	ArrayList<Projectile> bullitsOne;
 	ArrayList<Projectile> bullitsTwo;
 
-	private int sizeX = 1000, sizeY = 600;
+	private int sizeX = 1000, sizeY = 800;
 
 	public void setup() {
 		size(sizeX, sizeY);
@@ -33,8 +35,13 @@ public class RunMe extends PApplet {
 		shootOne.drawInitialBar(game.playerOne, this, "GREEN");
 		shootTwo.drawInitialBar(game.playerTwo, this, "green");
 
-		game.playerOne = new Player(this, 100, 100, 0, 0, 50.0, 50.0, 100, 2);
-		game.playerTwo = new Player(this, 100, 400, 0, 0, 50.0, 50.0, 100, 2);
+		pressedKeys = new Boolean[8];
+		for (int i = 0; i < pressedKeys.length; i++) {
+			pressedKeys[i] = false;
+		}
+
+		game.playerOne = new Player(this, 100, 100, 0, 0, 50.0, 50.0, 3.14, 100, 2);
+		game.playerTwo = new Player(this, 900, 400, 0, 0, 50.0, 50.0, 0, 100, 2);
 
 		bullitsOne = new ArrayList<Projectile>();
 		bullitsTwo = new ArrayList<Projectile>();
@@ -78,35 +85,95 @@ public class RunMe extends PApplet {
 
 	public void keyPressed() {
 
-		if (key == 'z') {
-			if (game.playerOne.canShoot()) {
-				game.playerOne.shoot();
-				bullitsOne.add(game.playerOne.getBullet());
+		if (keyPressed == true) {
+			if (key == 'z') {
+				if (game.playerOne.canShoot()) {
+					game.playerOne.shoot();
+					bullitsOne.add(game.playerOne.getBullet());
+				}
+			}
+			if (key == 'p') {
+				if (game.playerTwo.canShoot()) {
+					game.playerTwo.shoot();
+					bullitsTwo.add(game.playerTwo.getBullet());
+
+				}
+			}
+			if (key == 'w') {
+
+				pressedKeys[0] = true;
+			}
+			if (key == 's') {
+
+				pressedKeys[1] = true;
+			}
+
+			if (key == 'a') {
+
+				pressedKeys[2] = true;
+			}
+			if (key == 'd') {
+
+				pressedKeys[3] = true;
+			}
+			if (key == CODED) {
+				if (keyCode == UP) {
+
+					pressedKeys[4] = true;
+				}
+				if (keyCode == DOWN) {
+
+					pressedKeys[5] = true;
+				}
+				if (keyCode == LEFT) {
+
+					pressedKeys[6] = true;
+				}
+				if (keyCode == RIGHT) {
+
+					pressedKeys[7] = true;
+				}
 			}
 		}
-		if (key == 'p') {
-			if (game.playerTwo.canShoot()) {
-				game.playerTwo.shoot();
-				bullitsTwo.add(game.playerTwo.getBullet());
-			}
+
+	}
+
+	public void keyReleased() {
+		if (key == 'w') {
+
+			pressedKeys[0] = false;
+		}
+		if (key == 's') {
+
+			pressedKeys[1] = false;
 		}
 
-	}
+		if (key == 'a') {
 
-	public int getSizeX() {
-		return sizeX;
-	}
+			pressedKeys[2] = false;
+		}
+		if (key == 'd') {
 
-	public void setSizeX(int sizeX) {
-		this.sizeX = sizeX;
-	}
+			pressedKeys[3] = false;
+		}
+		if (key == CODED) {
+			if (keyCode == UP) {
 
-	public int getSizeY() {
-		return sizeY;
-	}
+				pressedKeys[4] = false;
+			}
+			if (keyCode == DOWN) {
 
-	public void setSizeY(int sizeY) {
-		this.sizeY = sizeY;
+				pressedKeys[5] = false;
+			}
+			if (keyCode == LEFT) {
+
+				pressedKeys[6] = false;
+			}
+			if (keyCode == RIGHT) {
+
+				pressedKeys[7] = false;
+			}
+		}
 	}
 
 	public static void main(String[] args) {
@@ -150,36 +217,42 @@ public class RunMe extends PApplet {
 	}
 
 	public void checkMoveKeysPressed() {
-		if (keyPressed == true) {
-			if (key == 'w') {
-				game.playerOne.setVelocity(90 - game.playerOne.getAngle(), 1);
-			}
-			if (key == 's') {
-				game.playerOne.setVelocity(90 - game.playerOne.getAngle(), 0);
-			}
 
-			if (key == 'a') {
-				game.playerOne.rotate(-1);
-			}
-			if (key == 'd') {
-				game.playerOne.rotate(1);
+		if (pressedKeys[0] == true) {
+			game.playerOne.setVelocity(90 - game.playerOne.getAngle(), 1);
 
-			}
-			if (key == CODED) {
-				if (keyCode == UP) {
-					game.playerTwo.setVelocity(90 - game.playerTwo.getAngle(), 1);
-				}
-				if (keyCode == DOWN) {
-					game.playerTwo.setVelocity(90 - game.playerTwo.getAngle(), 0);
-				}
-				if (keyCode == LEFT) {
-					game.playerTwo.rotate(-1);
-				}
-				if (keyCode == RIGHT) {
-					game.playerTwo.rotate(1);
-				}
-			}
 		}
+		if (pressedKeys[1] == true) {
+			game.playerOne.setVelocity(90 - game.playerOne.getAngle(), 0);
+
+		}
+
+		if (pressedKeys[2] == true) {
+			game.playerOne.rotate(-1);
+
+		}
+		if (pressedKeys[3] == true) {
+			game.playerOne.rotate(1);
+
+		}
+
+		if (pressedKeys[4] == true) {
+			game.playerTwo.setVelocity(90 - game.playerTwo.getAngle(), 1);
+
+		}
+		if (pressedKeys[5] == true) {
+			game.playerTwo.setVelocity(90 - game.playerTwo.getAngle(), 0);
+
+		}
+		if (pressedKeys[6] == true) {
+			game.playerTwo.rotate(-1);
+
+		}
+		if (pressedKeys[7] == true) {
+			game.playerTwo.rotate(1);
+
+		}
+
 	}
 
 }

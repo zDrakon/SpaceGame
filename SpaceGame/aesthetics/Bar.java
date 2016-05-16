@@ -9,19 +9,21 @@ public class Bar {
 	protected int width;
 	protected int height;
 	protected int paddingScale;
+	protected int round;
 
-	public Bar(int x, int y, int width, int height, int paddingScale) {
+	public Bar(int x, int y, int width, int height, int paddingScale, int round) {
 		super();
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
 		this.paddingScale = paddingScale;
+		this.round = round;
 	}
 
 	public void drawInitialBar(Player player, PApplet app, String color) {
 		app.fill(0, 0, 0);
-		app.rect(x - paddingScale, y - paddingScale, width + (2 * paddingScale), height + (2 * paddingScale));
+		app.rect(x - paddingScale, y - paddingScale, width + (2 * paddingScale), height + (2 * paddingScale), round);
 
 		if (color.equalsIgnoreCase("Red")) {
 			app.fill(255, 0, 0);
@@ -33,7 +35,7 @@ public class Bar {
 		if (color.equalsIgnoreCase("Blue")) {
 			app.fill(0, 0, 255);
 		}
-		app.rect(x, y, width, height);
+		app.rect(x, y, width, height, round);
 
 	}
 

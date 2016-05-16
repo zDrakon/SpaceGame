@@ -7,6 +7,9 @@ public class SpaceGame {
 	Player playerOne, playerTwo;
 
 	private int winner;
+	private int constraintX, constraintY; // TODO: make these the player
+											// boundaries with a line so they
+											// don't escape
 
 	public int getWinner() {
 
@@ -29,6 +32,10 @@ public class SpaceGame {
 			System.out.println("Player " + winner + " has won!");
 
 		}
+
+	}
+
+	public void preventEscape() {
 
 	}
 

@@ -11,13 +11,14 @@ public class Player extends Entity {
 	private final int RELOADTIME = 10;
 	private int reloadTimer;
 
-	public Player(PApplet app, double x, double y, double xSpeed, double ySpeed, double width, double height, int maxHp,
-			int level) {
+	public Player(PApplet app, double x, double y, double xSpeed, double ySpeed, double width, double height,
+			double angle, int maxHp, int level) {
 		super(app, x, y, xSpeed, ySpeed, 0, 0, width, height);
 		this.maxHp = maxHp;
 		this.currentHp = maxHp;
 		this.level = level;
 		this.reloadTimer = 0;
+		this.angle = angle;
 
 	}
 
