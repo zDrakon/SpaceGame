@@ -4,7 +4,8 @@ public class Projectile extends Entity {
 
 	public Projectile(double x, double y, double xSpeed, double ySpeed, double width, double height) {
 		super(p, x, y, xSpeed, ySpeed, 0, 0, width, height);
-		this.currentHp = 100;
+		this.maxHp = 100;
+		this.currentHp = this.maxHp;
 	}
 
 	public void setCenter(double x, double y) {

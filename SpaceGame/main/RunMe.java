@@ -3,6 +3,7 @@ package main;
 import java.util.ArrayList;
 
 import aesthetics.HealthBar;
+import aesthetics.ShootCooldownBar;
 import entities.Player;
 import entities.Projectile;
 import processing.core.PApplet;
@@ -13,6 +14,9 @@ public class RunMe extends PApplet {
 	HealthBar barOne = new HealthBar(20, 500, 100, 15, 10);
 	HealthBar barTwo = new HealthBar(420, 500, 100, 15, 10);
 
+	ShootCooldownBar shootOne = new ShootCooldownBar(800, 300, 100, 15, 10);
+	ShootCooldownBar shootTwo = new ShootCooldownBar(800, 450, 100, 15, 10);
+
 	ArrayList<Projectile> bullitsOne;
 	ArrayList<Projectile> bullitsTwo;
 
@@ -20,8 +24,11 @@ public class RunMe extends PApplet {
 
 	public void setup() {
 		size(sizeX, sizeY);
-		barOne.drawInitialHealthBar(game.playerOne, this);
-		barOne.drawInitialHealthBar(game.playerTwo, this);
+		barOne.drawInitialBar(game.playerOne, this, "Red");
+		barTwo.drawInitialBar(game.playerTwo, this, "RED");
+
+		shootOne.drawInitialBar(game.playerOne, this, "GREEN");
+		shootTwo.drawInitialBar(game.playerTwo, this, "green");
 
 		game.playerOne = new Player(this, 100, 100, 0, 0, 50.0, 50.0, 100, 2);
 		game.playerTwo = new Player(this, 100, 400, 0, 0, 50.0, 50.0, 100, 2);
@@ -32,9 +39,19 @@ public class RunMe extends PApplet {
 
 	public void draw() {
 		background(255);
-		barOne.update(game.playerOne, this);
-		barTwo.update(game.playerTwo, this);
+		game.checkForWinner();
+		barOne.updateHealthBar(game.playerOne, this);
+		barTwo.updateHealthBar(game.playerTwo, this);
 
+		shootOne.drawInitialBar(game.playerOne, this, "green");
+		shootTwo.drawInitialBar(game.playerTwo, this, "green");
+
+		for (int i = 0; i < bullitsOne.size(); i++) {
+			shootOne.updateCooldownbar(game.playerOne.getBullet(), this);
+		}
+		for (int i = 0; i < bullitsTwo.size(); i++) {
+			shootTwo.updateCooldownbar(game.playerTwo.getBullet(), this);
+		}
 		checkMoveKeysPressed();
 		doBulletOneActions();
 		doBulletTwoActions();
@@ -46,6 +63,7 @@ public class RunMe extends PApplet {
 		game.playerTwo.countReloadTimer();
 		game.playerTwo.move();
 		game.playerTwo.draw();
+
 	}
 
 	public void keyPressed() {
@@ -91,7 +109,7 @@ public class RunMe extends PApplet {
 			b.countLifetime();
 			if (b.isHitting(game.playerTwo)) {
 				bullitsOne.remove(i);
-				game.playerTwo.damageSelf(1);
+				game.playerTwo.damageSelf(10);
 			}
 			if (b.isAlive() != false) {
 				b.move();
@@ -109,7 +127,7 @@ public class RunMe extends PApplet {
 			b.countLifetime();
 			if (b.isHitting(game.playerOne)) {
 				bullitsTwo.remove(i);
-				game.playerOne.damageSelf(1);
+				game.playerOne.damageSelf(10);
 			}
 			if (b.isAlive() != false) {
 				b.move();
