@@ -5,8 +5,8 @@ import processing.core.PApplet;
 
 public class HealthBar extends Bar {
 
-	public HealthBar(int x, int y, int width, int height, int paddingScale, int round) {
-		super(x, y, width, height, paddingScale, round);
+	public HealthBar(PApplet app, int x, int y, int width, int height, int paddingScale, int round) {
+		super(app, x, y, width, height, paddingScale, round);
 
 	}
 

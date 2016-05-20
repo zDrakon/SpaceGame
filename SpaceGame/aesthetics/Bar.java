@@ -1,6 +1,5 @@
 package aesthetics;
 
-import entities.Player;
 import processing.core.PApplet;
 
 public class Bar {
@@ -10,8 +9,9 @@ public class Bar {
 	protected int height;
 	protected int paddingScale;
 	protected int round;
+	protected PApplet app;
 
-	public Bar(int x, int y, int width, int height, int paddingScale, int round) {
+	public Bar(PApplet app, int x, int y, int width, int height, int paddingScale, int round) {
 		super();
 		this.x = x;
 		this.y = y;
@@ -19,24 +19,30 @@ public class Bar {
 		this.height = height;
 		this.paddingScale = paddingScale;
 		this.round = round;
+		this.app = app;
 	}
 
-	public void drawInitialBar(Player player, PApplet app, String color) {
-		app.fill(0, 0, 0);
-		app.rect(x - paddingScale, y - paddingScale, width + (2 * paddingScale), height + (2 * paddingScale), round);
+	public void drawInitialBar(String color) {
+		this.app.fill(0, 0, 0);
+		this.app.rect(x - paddingScale, y - paddingScale, width + (2 * paddingScale), height + (2 * paddingScale),
+				round);
 
 		if (color.equalsIgnoreCase("Red")) {
-			app.fill(255, 0, 0);
+			this.app.fill(255, 0, 0);
 		}
 
 		if (color.equalsIgnoreCase("Green")) {
-			app.fill(0, 255, 0);
+			this.app.fill(0, 255, 0);
 		}
 		if (color.equalsIgnoreCase("Blue")) {
-			app.fill(0, 0, 255);
+			this.app.fill(0, 0, 255);
 		}
 		app.rect(x, y, width, height, round);
 
+	}
+
+	public void draw() {
+		app.rect(x - paddingScale, y - paddingScale, width + (2 * paddingScale), height + (2 * paddingScale), round);
 	}
 
 }

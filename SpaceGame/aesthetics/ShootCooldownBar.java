@@ -7,8 +7,8 @@ public class ShootCooldownBar extends Bar {
 
 	// TODO: fix the coooldown bars
 
-	public ShootCooldownBar(int x, int y, int width, int height, int paddingScale, int round) {
-		super(x, y, width, height, paddingScale, round);
+	public ShootCooldownBar(PApplet app, int x, int y, int width, int height, int paddingScale, int round) {
+		super(app, x, y, width, height, paddingScale, round);
 	}
 
 	public void updateCooldownbar(Projectile bullet, PApplet app) {

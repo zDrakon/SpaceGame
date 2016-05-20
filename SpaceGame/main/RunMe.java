@@ -2,8 +2,8 @@ package main;
 
 import java.util.ArrayList;
 
+import aesthetics.Bar;
 import aesthetics.HealthBar;
-import aesthetics.ShootCooldownBar;
 import entities.Player;
 import entities.Projectile;
 import processing.core.PApplet;
@@ -14,13 +14,20 @@ public class RunMe extends PApplet {
 	String[] fontList = PFont.list();
 
 	SpaceGame game = new SpaceGame();
-	HealthBar barOne = new HealthBar(20, 500, 100, 15, 10, 8);
-	HealthBar barTwo = new HealthBar(420, 500, 100, 15, 10, 8);
+	HealthBar healthbarOne;
+	HealthBar healthbarTwo;
+
+	Bar borderRight;
+	Bar borderLeft;
+	Bar borderUp;
+	Bar borderDown;
 
 	Boolean[] pressedKeys;
 
-	ShootCooldownBar shootOne = new ShootCooldownBar(800, 300, 100, 15, 10, 8);
-	ShootCooldownBar shootTwo = new ShootCooldownBar(800, 450, 100, 15, 10, 8);
+	// ShootCooldownBar shootOne = new ShootCooldownBar(this, 800, 300, 100, 15,
+	// 10, 8);
+	// ShootCooldownBar shootTwo = new ShootCooldownBar(this, 800, 450, 100, 15,
+	// 10, 8);
 
 	ArrayList<Projectile> bullitsOne;
 	ArrayList<Projectile> bullitsTwo;
@@ -28,65 +35,70 @@ public class RunMe extends PApplet {
 	private int sizeX = 1000, sizeY = 800;
 
 	public void setup() {
-		size(sizeX, sizeY);
-		barOne.drawInitialBar(game.playerOne, this, "Red");
-		barTwo.drawInitialBar(game.playerTwo, this, "RED");
+		game.playerOne = new Player(this, 110, 110, 0, 0, 30, 30, Math.PI, 100, 2);
+		game.playerTwo = new Player(this, 890, 590, 0, 0, 30, 30, 0, 100, 2);
 
-		shootOne.drawInitialBar(game.playerOne, this, "GREEN");
-		shootTwo.drawInitialBar(game.playerTwo, this, "green");
+		bullitsOne = new ArrayList<Projectile>();
+		bullitsTwo = new ArrayList<Projectile>();
+
+		healthbarOne = new HealthBar(this, 80, 670, 100, 10, 6, 8);
+		healthbarTwo = new HealthBar(this, 820, 670, 100, 10, 6, 8);
+
+		borderRight = new Bar(this, 950, 50, 1, 600, 0, 0);
+		borderLeft = new Bar(this, 50, 50, 1, 600, 0, 0);
+		borderUp = new Bar(this, 50, 50, 900, 1, 0, 0);
+		borderDown = new Bar(this, 50, 650, 900, 1, 0, 0);
+
+		size(sizeX, sizeY);
+		healthbarOne.drawInitialBar("Red");
+		healthbarTwo.drawInitialBar("RED");
 
 		pressedKeys = new Boolean[8];
 		for (int i = 0; i < pressedKeys.length; i++) {
 			pressedKeys[i] = false;
 		}
 
-		game.playerOne = new Player(this, 100, 100, 0, 0, 50.0, 50.0, 3.14, 100, 2);
-		game.playerTwo = new Player(this, 900, 400, 0, 0, 50.0, 50.0, 0, 100, 2);
-
-		bullitsOne = new ArrayList<Projectile>();
-		bullitsTwo = new ArrayList<Projectile>();
 	}
 
 	public void draw() {
 		background(255);
 		if (game.getWinner() != 0) {
 			background(255);
-			text("GAME OVER", 500, 300);
+			text("GAME OVER!" + " PLAYER " + game.getWinner() + "  WINS", 400, 300);
 			return;
 		}
 
 		game.checkForWinner();
 
-		barOne.updateHealthBar(game.playerOne, this);
-		barTwo.updateHealthBar(game.playerTwo, this);
+		healthbarOne.updateHealthBar(game.playerOne, this);
+		healthbarTwo.updateHealthBar(game.playerTwo, this);
 
-		shootOne.drawInitialBar(game.playerOne, this, "green");
-		shootTwo.drawInitialBar(game.playerTwo, this, "green");
+		borderRight.draw();
+		borderLeft.draw();
+		borderUp.draw();
+		borderDown.draw();
 
-		for (int i = 0; i < bullitsOne.size(); i++) {
-			shootOne.updateCooldownbar(game.playerOne.getBullet(), this);
-		}
-		for (int i = 0; i < bullitsTwo.size(); i++) {
-			shootTwo.updateCooldownbar(game.playerTwo.getBullet(), this);
-		}
 		checkMoveKeysPressed();
 		doBulletOneActions();
 		doBulletTwoActions();
 
-		game.playerOne.countReloadTimer();
-		game.playerOne.move();
-		game.playerOne.draw();
+		doActions(game.playerOne, game.playerTwo);
+		doActions(game.playerTwo, game.playerOne);
 
-		game.playerTwo.countReloadTimer();
-		game.playerTwo.move();
-		game.playerTwo.draw();
+		game.checkCollision();
+	}
 
+	public void doActions(Player p1, Player p2) {
+		p1.countReloadTimer();
+		p1.move();
+		p1.preventEscape();
+		p1.draw();
 	}
 
 	public void keyPressed() {
 
 		if (keyPressed == true) {
-			if (key == 'z') {
+			if (key == 'r') {
 				if (game.playerOne.canShoot()) {
 					game.playerOne.shoot();
 					bullitsOne.add(game.playerOne.getBullet());
@@ -186,7 +198,7 @@ public class RunMe extends PApplet {
 			b.countLifetime();
 			if (b.isHitting(game.playerTwo)) {
 				bullitsOne.remove(i);
-				game.playerTwo.damageSelf(10);
+				game.playerTwo.damageSelf(2);
 			}
 			if (b.isAlive() != false) {
 				b.move();
@@ -204,7 +216,7 @@ public class RunMe extends PApplet {
 			b.countLifetime();
 			if (b.isHitting(game.playerOne)) {
 				bullitsTwo.remove(i);
-				game.playerOne.damageSelf(10);
+				game.playerOne.damageSelf(2);
 			}
 			if (b.isAlive() != false) {
 				b.move();

@@ -456,6 +456,15 @@ public class Entity {
 
 	public int getCenterX() {
 		return (int) (position.x + width / 2.0);
+
+	}
+
+	public void setCenterX(int centerX) {
+		position.x = centerX - width / 2;
+	}
+
+	public void setCenterY(int centerY) {
+		position.y = centerY - width / 2;
 	}
 
 	public int getCenterY() {
@@ -464,5 +473,17 @@ public class Entity {
 
 	public void damageSelf(int damage) {
 		this.currentHp = this.currentHp - damage;
+	}
+
+	public void addPosition(PVector v) {
+		position.add(v);
+	}
+
+	public void subtractPosition(PVector v) {
+		position.sub(v);
+	}
+
+	public PVector getVelocity() {
+		return this.velocity;
 	}
 }

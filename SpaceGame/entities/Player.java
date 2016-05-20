@@ -10,6 +10,7 @@ public class Player extends Entity {
 	private Projectile bullet;
 	private final int RELOADTIME = 10;
 	private int reloadTimer;
+	private int collideTimer;
 
 	public Player(PApplet app, double x, double y, double xSpeed, double ySpeed, double width, double height,
 			double angle, int maxHp, int level) {
@@ -39,7 +40,7 @@ public class Player extends Entity {
 	}
 
 	public void shoot() {
-		this.bullet = new Projectile(this.getCenterX(), this.getCenterY(), 0, 0, 5, 20);
+		this.bullet = new Projectile(this.getCenterX(), this.getCenterY(), 0, 0, 2, 10);
 		this.bullet.setCenter(this.getCenterX(), this.getCenterY());
 		this.bullet.rotate(this.getAngle());
 		this.bullet.setVelocity(90 - this.getAngle(), 5);
@@ -65,6 +66,27 @@ public class Player extends Entity {
 
 	public void takeDamage(int amt) {
 		currentHp = currentHp - amt;
+	}
+
+	public void preventEscape() {
+		if (this.getCenterX() > 950 - (Math.sqrt(2) * this.width / 2)) {
+			this.setCenterX((int) (950 - (Math.sqrt(2) * this.width / 2)));
+		}
+		if (this.getCenterX() < 50 + (Math.sqrt(2) * this.width / 2)) {
+			this.setCenterX((int) (50 + 1 + (Math.sqrt(2) * this.width / 2)));
+		}
+
+		if (this.getCenterY() > 650 - (Math.sqrt(2) * this.height / 2)) {
+			this.setCenterY((int) (650 - (Math.sqrt(2) * this.height / 2)));
+		}
+
+		if (this.getCenterY() < 50 + (Math.sqrt(2) * this.height / 2)) {
+			this.setCenterY((int) (50 + 1 + (Math.sqrt(2) * this.height / 2)));
+		}
+	}
+
+	public void countCollideTimer() {
+		collideTimer++;
 	}
 
 }
