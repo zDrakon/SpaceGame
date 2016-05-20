@@ -1,5 +1,8 @@
 package main;
 
+import java.util.ArrayList;
+
+import entities.Asteroid;
 import entities.Player;
 
 public class SpaceGame {
@@ -40,12 +43,22 @@ public class SpaceGame {
 
 	}
 
-	public void checkCollision() {
+	public void checkCollision(ArrayList<Asteroid> asteroids) {
 		if (playerOne.isHitting(playerTwo) || playerOne.isHitting(playerTwo)) {
 
 			collidePlayer(playerOne);
 			collidePlayer(playerTwo);
 
+		}
+
+		for (int i = 0; i < asteroids.size(); i++) {
+			Asteroid a = asteroids.get(i);
+			if (playerOne.isHitting(a)) {
+				collidePlayer(playerOne);
+			}
+			if (playerTwo.isHitting(a)) {
+				collidePlayer(playerTwo);
+			}
 		}
 	}
 

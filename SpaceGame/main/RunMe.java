@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import aesthetics.Bar;
 import aesthetics.HealthBar;
+import entities.Asteroid;
 import entities.Player;
 import entities.Projectile;
 import processing.core.PApplet;
@@ -24,6 +25,8 @@ public class RunMe extends PApplet {
 
 	Boolean[] pressedKeys;
 
+	ArrayList<Asteroid> asteroids;
+
 	// ShootCooldownBar shootOne = new ShootCooldownBar(this, 800, 300, 100, 15,
 	// 10, 8);
 	// ShootCooldownBar shootTwo = new ShootCooldownBar(this, 800, 450, 100, 15,
@@ -35,6 +38,14 @@ public class RunMe extends PApplet {
 	private int sizeX = 1000, sizeY = 800;
 
 	public void setup() {
+		asteroids = new ArrayList<Asteroid>();
+
+		for (int i = 0; i < 10; i++) {
+			Asteroid a = new Asteroid(this, 200 + Math.random() * 500, 200 + Math.random() * 300, 0, 0, 50, 50,
+					Math.random() * Math.PI);
+			asteroids.add(a);
+		}
+
 		game.playerOne = new Player(this, 110, 110, 0, 0, 30, 30, Math.PI, 100, 2);
 		game.playerTwo = new Player(this, 890, 590, 0, 0, 30, 30, 0, 100, 2);
 
@@ -68,6 +79,11 @@ public class RunMe extends PApplet {
 			return;
 		}
 
+		for (int i = 0; i < asteroids.size(); i++) {
+			Asteroid a = asteroids.get(i);
+			a.draw();
+		}
+
 		game.checkForWinner();
 
 		healthbarOne.updateHealthBar(game.playerOne, this);
@@ -85,7 +101,7 @@ public class RunMe extends PApplet {
 		doActions(game.playerOne, game.playerTwo);
 		doActions(game.playerTwo, game.playerOne);
 
-		game.checkCollision();
+		game.checkCollision(asteroids);
 	}
 
 	public void doActions(Player p1, Player p2) {
@@ -200,6 +216,11 @@ public class RunMe extends PApplet {
 				bullitsOne.remove(i);
 				game.playerTwo.damageSelf(2);
 			}
+			for (int a = 0; a < asteroids.size(); a++) {
+				if (b.isHitting(asteroids.get(a))) {
+					bullitsOne.remove(i);
+				}
+			}
 			if (b.isAlive() != false) {
 				b.move();
 				b.draw();
@@ -217,6 +238,11 @@ public class RunMe extends PApplet {
 			if (b.isHitting(game.playerOne)) {
 				bullitsTwo.remove(i);
 				game.playerOne.damageSelf(2);
+			}
+			for (int a = 0; a < asteroids.size(); a++) {
+				if (b.isHitting(asteroids.get(a))) {
+					bullitsTwo.remove(i);
+				}
 			}
 			if (b.isAlive() != false) {
 				b.move();
