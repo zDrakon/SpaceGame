@@ -40,7 +40,7 @@ public class RunMe extends PApplet {
 	public void setup() {
 		asteroids = new ArrayList<Asteroid>();
 
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 50; i++) {
 			Asteroid a = new Asteroid(this, 200 + Math.random() * 500, 200 + Math.random() * 300, 0, 0, 50, 50,
 					Math.random() * Math.PI);
 			asteroids.add(a);
@@ -212,11 +212,14 @@ public class RunMe extends PApplet {
 		for (int i = 0; i < bullitsOne.size(); i++) {
 			Projectile b = bullitsOne.get(i);
 			b.countLifetime();
+			if (b.isOutOfBounds()) {
+				bullitsOne.remove(i);
+			}
 			if (b.isHitting(game.playerTwo)) {
 				bullitsOne.remove(i);
 				game.playerTwo.damageSelf(2);
 			}
-			for (int a = 0; a < asteroids.size(); a++) {
+			for (int a = asteroids.size() - 1; a >= 1; a--) {
 				if (b.isHitting(asteroids.get(a))) {
 					bullitsOne.remove(i);
 				}
@@ -235,11 +238,14 @@ public class RunMe extends PApplet {
 		for (int i = 0; i < bullitsTwo.size(); i++) {
 			Projectile b = bullitsTwo.get(i);
 			b.countLifetime();
+			if (b.isOutOfBounds()) {
+				bullitsTwo.remove(i);
+			}
 			if (b.isHitting(game.playerOne)) {
 				bullitsTwo.remove(i);
 				game.playerOne.damageSelf(2);
 			}
-			for (int a = 0; a < asteroids.size(); a++) {
+			for (int a = asteroids.size() - 1; a >= 1; a--) {
 				if (b.isHitting(asteroids.get(a))) {
 					bullitsTwo.remove(i);
 				}

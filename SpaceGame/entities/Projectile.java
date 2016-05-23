@@ -24,4 +24,23 @@ public class Projectile extends Entity {
 		return true;
 	}
 
+	public boolean isOutOfBounds() {
+
+		if (this.getCenterX() > 950 - (Math.sqrt(2) * this.getWidth() / 2)) {
+			return true;
+		}
+		if (this.getCenterX() < 50 + (Math.sqrt(2) * this.getWidth() / 2)) {
+			return true;
+		}
+
+		if (this.getCenterY() > 650 - (Math.sqrt(2) * this.getHeight() / 2)) {
+			return true;
+		}
+
+		if (this.getCenterY() < 50 + (Math.sqrt(2) * this.getHeight() / 2)) {
+			return true;
+		}
+		return false;
+	}
+
 }
