@@ -1,6 +1,6 @@
 package entities;
 
-import main.Powerup;
+import entities.powerups.Powerup;
 import processing.core.PApplet;
 
 public class Player extends Entity {
@@ -40,7 +40,7 @@ public class Player extends Entity {
 	}
 
 	public void shoot() {
-		this.bullet = new Projectile(this.getCenterX(), this.getCenterY(), 0, 0, 2, 10);
+		this.bullet = new Projectile(this.getCenterX(), this.getCenterY(), 0, 0, 1, 10);
 		this.bullet.setCenter(this.getCenterX(), this.getCenterY());
 		this.bullet.rotate(this.getAngle());
 		this.bullet.setVelocity(90 - this.getAngle(), 5);
@@ -87,6 +87,27 @@ public class Player extends Entity {
 
 	public void countCollideTimer() {
 		collideTimer++;
+	}
+
+	public boolean isHittingAsteroid(Asteroid a) {
+
+		if (this.getDistanceTo(a.getCenterX(), a.getCenterY(), (int) this.getLeftSideX(),
+				(int) this.getTopSideY()) <= a.getWidth() / 2) {
+			return true;
+		}
+		if (this.getDistanceTo(a.getCenterX(), a.getCenterY(), (int) this.getLeftSideX(),
+				(int) this.getBottomSideY()) <= a.getWidth() / 2) {
+			return true;
+		}
+		if (this.getDistanceTo(a.getCenterX(), a.getCenterY(), (int) this.getRightSideX(),
+				(int) this.getTopSideY()) <= a.getWidth() / 2) {
+			return true;
+		}
+		if (this.getDistanceTo(a.getCenterX(), a.getCenterY(), (int) this.getRightSideX(),
+				(int) this.getBottomSideY()) <= a.getWidth() / 2) {
+			return true;
+		}
+		return false;
 	}
 
 }
