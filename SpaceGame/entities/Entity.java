@@ -19,6 +19,7 @@ public class Entity {
 
 	protected float width;
 	protected float height;
+	protected float radius;
 
 	protected float maxHp;
 
@@ -69,6 +70,22 @@ public class Entity {
 
 		width = (float) w;
 		height = (float) h;
+	}
+
+	public Entity(PApplet papplet, double x, double y, double xspeed, double yspeed, double xacceleration,
+			double yacceleration, float radius) {
+		this.p = papplet;
+		position = new PVector((float) x, (float) y);
+		velocity = new PVector((float) xspeed, (float) yspeed);
+		acceleration = new PVector((float) xacceleration, (float) yacceleration);
+
+		angle = 0;
+		img = null;
+		id = next_id;
+		next_id++;
+
+		this.radius = radius;
+
 	}
 
 	public Entity(PApplet p, double x, double y, double xspeed, double yspeed, double xacceleration,
@@ -485,5 +502,9 @@ public class Entity {
 
 	public PVector getVelocity() {
 		return this.velocity;
+	}
+
+	public void setHp(float hp) {
+		this.currentHp = hp;
 	}
 }

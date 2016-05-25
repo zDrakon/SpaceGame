@@ -1,14 +1,18 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import aesthetics.Bar;
 import aesthetics.HealthBar;
 import entities.Asteroid;
 import entities.Player;
 import entities.Projectile;
+import entities.powerups.Powerup;
+import entities.powerups.Regeneration;
 import processing.core.PApplet;
 import processing.core.PFont;
+import processing.core.PImage;
 
 public class RunMe extends PApplet {
 
@@ -18,6 +22,14 @@ public class RunMe extends PApplet {
 	HealthBar healthbarOne;
 	HealthBar healthbarTwo;
 
+	Random rand;
+
+	PImage fighterOne;
+	PImage fighterTwo;
+	PImage asteroid;
+	PImage bulletOne;
+	PImage bulletTwo;
+
 	Bar borderRight;
 	Bar borderLeft;
 	Bar borderUp;
@@ -26,6 +38,8 @@ public class RunMe extends PApplet {
 	Boolean[] pressedKeys;
 
 	ArrayList<Asteroid> asteroids;
+
+	ArrayList<Powerup> powerups;
 
 	// ShootCooldownBar shootOne = new ShootCooldownBar(this, 800, 300, 100, 15,
 	// 10, 8);
@@ -38,16 +52,39 @@ public class RunMe extends PApplet {
 	private int sizeX = 1000, sizeY = 800;
 
 	public void setup() {
-		asteroids = new ArrayList<Asteroid>();
 
-		for (int i = 0; i < 50; i++) {
-			Asteroid a = new Asteroid(this, 200 + Math.random() * 500, 200 + Math.random() * 300, 0, 0, 50, 50,
-					Math.random() * Math.PI);
+		fighterOne = loadImage("../FighterOne.png");
+		fighterTwo = loadImage("../FighterTwo.png");
+		asteroid = loadImage("../Asteroid.png");
+		bulletOne = loadImage("../BulletOne.png");
+		bulletTwo = loadImage("../BulletTwo.png");
+
+		fighterOne.resize(30, 30);
+		fighterTwo.resize(30, 30);
+		asteroid.resize(50, 50);
+		bulletOne.resize(1, 10);
+		bulletTwo.resize(1, 10);
+
+		rand = new Random();
+		asteroids = new ArrayList<Asteroid>();
+		powerups = new ArrayList<Powerup>();
+
+		for (int i = 0; i < 10; i++) {
+			Powerup p = new Regeneration(this, 100 + rand.nextInt(500), 200 + rand.nextInt(300), 5, 5, "RED");
+			powerups.add(p);
+		}
+
+		for (int i = 0; i < 30; i++) {
+			Asteroid a = new Asteroid(this, 200 + rand.nextInt(500), 200 + rand.nextInt(300), 0, 0, 50, 50,
+					rand.nextDouble() * Math.PI);
 			asteroids.add(a);
 		}
 
 		game.playerOne = new Player(this, 110, 110, 0, 0, 30, 30, Math.PI, 100, 2);
 		game.playerTwo = new Player(this, 890, 590, 0, 0, 30, 30, 0, 100, 2);
+
+		game.playerOne.setImage(fighterOne);
+		game.playerTwo.setImage(fighterTwo);
 
 		bullitsOne = new ArrayList<Projectile>();
 		bullitsTwo = new ArrayList<Projectile>();
@@ -73,6 +110,7 @@ public class RunMe extends PApplet {
 
 	public void draw() {
 		background(255);
+
 		if (game.getWinner() != 0) {
 			background(255);
 			text("GAME OVER!" + " PLAYER " + game.getWinner() + "  WINS", 400, 300);
@@ -81,7 +119,13 @@ public class RunMe extends PApplet {
 
 		for (int i = 0; i < asteroids.size(); i++) {
 			Asteroid a = asteroids.get(i);
+			a.setImage(asteroid);
 			a.draw();
+		}
+
+		for (int i = 0; i < powerups.size(); i++) {
+			Powerup p = powerups.get(i);
+			p.draw();
 		}
 
 		game.checkForWinner();
@@ -101,7 +145,7 @@ public class RunMe extends PApplet {
 		doActions(game.playerOne, game.playerTwo);
 		doActions(game.playerTwo, game.playerOne);
 
-		game.checkCollision(asteroids);
+		game.checkCollision(asteroids, powerups);
 	}
 
 	public void doActions(Player p1, Player p2) {
@@ -225,6 +269,7 @@ public class RunMe extends PApplet {
 				}
 			}
 			if (b.isAlive() != false) {
+				b.setImage(bulletOne);
 				b.move();
 				b.draw();
 			} else {
@@ -251,6 +296,7 @@ public class RunMe extends PApplet {
 				}
 			}
 			if (b.isAlive() != false) {
+				b.setImage(bulletTwo);
 				b.move();
 				b.draw();
 			} else {
