@@ -8,7 +8,7 @@ import aesthetics.HealthBar;
 import entities.Asteroid;
 import entities.Player;
 import entities.Projectile;
-import entities.powerups.Powerup;
+import entities.powerups.Multishot;
 import entities.powerups.Regeneration;
 import processing.core.PApplet;
 import processing.core.PFont;
@@ -29,6 +29,8 @@ public class RunMe extends PApplet {
 	PImage asteroid;
 	PImage bulletOne;
 	PImage bulletTwo;
+	PImage trash;
+	PImage multiImage;
 
 	Bar borderRight;
 	Bar borderLeft;
@@ -39,7 +41,8 @@ public class RunMe extends PApplet {
 
 	ArrayList<Asteroid> asteroids;
 
-	ArrayList<Powerup> powerups;
+	ArrayList<Regeneration> regens;
+	ArrayList<Multishot> multis;
 
 	// ShootCooldownBar shootOne = new ShootCooldownBar(this, 800, 300, 100, 15,
 	// 10, 8);
@@ -53,31 +56,58 @@ public class RunMe extends PApplet {
 
 	public void setup() {
 
-		fighterOne = loadImage("../FighterOne.png");
-		fighterTwo = loadImage("../FighterTwo.png");
-		asteroid = loadImage("../Asteroid.png");
-		bulletOne = loadImage("../BulletOne.png");
-		bulletTwo = loadImage("../BulletTwo.png");
+		fighterOne = loadImage("../assets/FighterOne.png");
+		fighterTwo = loadImage("../assets/FighterTwo.png");
+		asteroid = loadImage("../assets/Asteroid.png");
+		bulletOne = loadImage("../assets/BulletOne.png");
+		bulletTwo = loadImage("../assets/BulletTwo.png");
+		trash = loadImage("../assets/trash.png");
+		multiImage = loadImage("../assets/Upgrade.png");
 
 		fighterOne.resize(30, 30);
 		fighterTwo.resize(30, 30);
 		asteroid.resize(50, 50);
-		bulletOne.resize(1, 10);
-		bulletTwo.resize(1, 10);
+		bulletOne.resize(2, 10);
+		bulletTwo.resize(2, 10);
+		trash.resize(30, 30);
+		multiImage.resize(10, 10);
 
 		rand = new Random();
 		asteroids = new ArrayList<Asteroid>();
-		powerups = new ArrayList<Powerup>();
+		regens = new ArrayList<Regeneration>();
+		multis = new ArrayList<Multishot>();
 
-		for (int i = 0; i < 10; i++) {
-			Powerup p = new Regeneration(this, 100 + rand.nextInt(500), 200 + rand.nextInt(300), 5, 5, "RED");
-			powerups.add(p);
-		}
-
-		for (int i = 0; i < 30; i++) {
+		for (int i = 0; i < 15; i++) {
 			Asteroid a = new Asteroid(this, 200 + rand.nextInt(500), 200 + rand.nextInt(300), 0, 0, 50, 50,
 					rand.nextDouble() * Math.PI);
 			asteroids.add(a);
+		}
+
+		for (int i = 0; i < 10; i++) {
+			Regeneration r = new Regeneration(this, 100 + rand.nextInt(500), 200 + rand.nextInt(300), 5, 5,
+					rand.nextDouble() * Math.PI);
+			for (int a = 0; a < asteroids.size(); a++) {
+				if (r.isHitting(asteroids.get(a))) {
+
+					r.setCenterX(200 + rand.nextInt(500));
+					r.setCenterY(200 + rand.nextInt(300));
+				}
+			}
+
+			regens.add(r);
+		}
+
+		for (int i = 0; i < 10; i++) {
+			Multishot m = new Multishot(this, 100 + rand.nextInt(500), 200 + rand.nextInt(300), 5, 5);
+
+			for (int a = 0; a < asteroids.size(); a++) {
+				if (m.isHitting(asteroids.get(a))) {
+
+					m.setCenterX(200 + rand.nextInt(500));
+					m.setCenterY(200 + rand.nextInt(300));
+				}
+			}
+			multis.add(m);
 		}
 
 		game.playerOne = new Player(this, 110, 110, 0, 0, 30, 30, Math.PI, 100, 2);
@@ -111,8 +141,12 @@ public class RunMe extends PApplet {
 	public void draw() {
 		background(255);
 
+		fill(0);
+		rect(50, 50, 900, 600);
+
 		if (game.getWinner() != 0) {
 			background(255);
+
 			text("GAME OVER!" + " PLAYER " + game.getWinner() + "  WINS", 400, 300);
 			return;
 		}
@@ -123,9 +157,16 @@ public class RunMe extends PApplet {
 			a.draw();
 		}
 
-		for (int i = 0; i < powerups.size(); i++) {
-			Powerup p = powerups.get(i);
-			p.draw();
+		for (int i = 0; i < regens.size(); i++) {
+			Regeneration r = regens.get(i);
+			r.setImage(trash);
+			r.draw();
+		}
+
+		for (Multishot m : multis) {
+
+			m.setImage(multiImage);
+			m.draw();
 		}
 
 		game.checkForWinner();
@@ -142,17 +183,23 @@ public class RunMe extends PApplet {
 		doBulletOneActions();
 		doBulletTwoActions();
 
-		doActions(game.playerOne, game.playerTwo);
-		doActions(game.playerTwo, game.playerOne);
+		doActions(game.playerOne);
+		doActions(game.playerTwo);
 
-		game.checkCollision(asteroids, powerups);
+		game.checkCollision(asteroids, multis, regens);
 	}
 
-	public void doActions(Player p1, Player p2) {
-		p1.countReloadTimer();
-		p1.move();
-		p1.preventEscape();
-		p1.draw();
+	public void doActions(Player p) {
+		if (p.getPowerup() == 1) {
+			p.count();
+			if (!p.multiShotActivated()) {
+				p.setPowerup(0);
+			}
+		}
+		p.countReloadTimer();
+		p.move();
+		p.preventEscape();
+		p.draw();
 	}
 
 	public void keyPressed() {
@@ -160,15 +207,30 @@ public class RunMe extends PApplet {
 		if (keyPressed == true) {
 			if (key == 'r') {
 				if (game.playerOne.canShoot()) {
-					game.playerOne.shoot();
-					bullitsOne.add(game.playerOne.getBullet());
+					if (game.playerOne.getPowerup() == 0) {
+						Projectile b = game.playerOne.shoot();
+						bullitsOne.add(b);
+					} else if (game.playerOne.getPowerup() == 1) {
+						ArrayList<Projectile> bullets = game.playerOne.multiShoot();
+						for (Projectile b : bullets) {
+							bullitsOne.add(b);
+						}
+
+					}
 				}
 			}
 			if (key == 'p') {
 				if (game.playerTwo.canShoot()) {
-					game.playerTwo.shoot();
-					bullitsTwo.add(game.playerTwo.getBullet());
+					if (game.playerTwo.getPowerup() == 0) {
+						Projectile b = game.playerTwo.shoot();
+						bullitsTwo.add(b);
+					} else if (game.playerTwo.getPowerup() == 1) {
+						ArrayList<Projectile> bullets = game.playerTwo.multiShoot();
+						for (Projectile b : bullets) {
+							bullitsTwo.add(b);
+						}
 
+					}
 				}
 			}
 			if (key == 'w') {
@@ -257,15 +319,16 @@ public class RunMe extends PApplet {
 			Projectile b = bullitsOne.get(i);
 			b.countLifetime();
 			if (b.isOutOfBounds()) {
-				bullitsOne.remove(i);
+				bullitsOne.remove(b);
 			}
 			if (b.isHitting(game.playerTwo)) {
-				bullitsOne.remove(i);
+				bullitsOne.remove(b);
 				game.playerTwo.damageSelf(2);
 			}
-			for (int a = asteroids.size() - 1; a >= 1; a--) {
+
+			for (int a = asteroids.size() - 1; a >= 0; a--) {
 				if (b.isHitting(asteroids.get(a))) {
-					bullitsOne.remove(i);
+					bullitsOne.remove(b);
 				}
 			}
 			if (b.isAlive() != false) {
@@ -273,7 +336,7 @@ public class RunMe extends PApplet {
 				b.move();
 				b.draw();
 			} else {
-				bullitsOne.remove(i);
+				bullitsOne.remove(b);
 			}
 
 		}
@@ -284,15 +347,15 @@ public class RunMe extends PApplet {
 			Projectile b = bullitsTwo.get(i);
 			b.countLifetime();
 			if (b.isOutOfBounds()) {
-				bullitsTwo.remove(i);
+				bullitsTwo.remove(b);
 			}
 			if (b.isHitting(game.playerOne)) {
-				bullitsTwo.remove(i);
+				bullitsTwo.remove(b);
 				game.playerOne.damageSelf(2);
 			}
-			for (int a = asteroids.size() - 1; a >= 1; a--) {
+			for (int a = asteroids.size() - 1; a >= 0; a--) {
 				if (b.isHitting(asteroids.get(a))) {
-					bullitsTwo.remove(i);
+					bullitsTwo.remove(b);
 				}
 			}
 			if (b.isAlive() != false) {
@@ -300,7 +363,7 @@ public class RunMe extends PApplet {
 				b.move();
 				b.draw();
 			} else {
-				bullitsTwo.remove(i);
+				bullitsTwo.remove(b);
 			}
 
 		}

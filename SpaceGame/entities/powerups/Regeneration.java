@@ -5,13 +5,14 @@ import processing.core.PApplet;
 
 public class Regeneration extends Powerup {
 
-	public Regeneration(PApplet app, double x, double y, double width, double height, String color) {
-		super(app, x, y, width, height, 0, color);
+	public Regeneration(PApplet app, double x, double y, double width, double height, double angle) {
+		super(app, x, y, width, height, 0, 0);
 		this.duration = 0;
+		this.angle = angle;
 	}
 
 	public void healPlayer(Player p) {
-		p.setHp(p.getHp() + (50));
+		p.setHp(p.getHp() + (10));
 
 		if (p.getHp() >= p.getMaxHp()) {
 			p.setHp(p.getMaxHp());

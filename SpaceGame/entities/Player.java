@@ -1,21 +1,23 @@
 package entities;
 
-import entities.powerups.Powerup;
+import java.util.ArrayList;
+
 import processing.core.PApplet;
 
 public class Player extends Entity {
 
-	private Powerup powerup;
+	private int powerup;
 	private int level;
-	private Projectile bullet;
 	private final int RELOADTIME = 10;
 	private int reloadTimer;
-	private int collideTimer;
+	private int shotCounter;
 
 	public Player(PApplet app, double x, double y, double xSpeed, double ySpeed, double width, double height,
 			double angle, int maxHp, int level) {
 		super(app, x, y, xSpeed, ySpeed, 0, 0, width, height);
+
 		this.maxHp = maxHp;
+		this.powerup = 0;
 		this.currentHp = maxHp;
 		this.level = level;
 		this.reloadTimer = 0;
@@ -31,23 +33,49 @@ public class Player extends Entity {
 		this.level = level;
 	}
 
-	public Powerup getPowerup() {
+	public int getPowerup() {
 		return powerup;
 	}
 
-	public void applyPowerup(Powerup powerup) {
-		this.powerup = powerup;
+	public void setPowerup(int p) {
+		this.powerup = p;
 	}
 
-	public void shoot() {
-		this.bullet = new Projectile(this.getCenterX(), this.getCenterY(), 0, 0, 1, 10);
-		this.bullet.setCenter(this.getCenterX(), this.getCenterY());
-		this.bullet.rotate(this.getAngle());
-		this.bullet.setVelocity(90 - this.getAngle(), 5);
+	public Projectile shoot() {
+		Projectile bullet;
+		bullet = new Projectile(this.getCenterX(), this.getCenterY(), 0, 0, 2, 10);
+		bullet.setCenter(this.getCenterX(), this.getCenterY());
+		bullet.rotate(this.getAngle());
+		bullet.setVelocity(90 - this.getAngle(), 5);
+
+		return bullet;
 	}
 
-	public Projectile getBullet() {
-		return this.bullet;
+	public ArrayList<Projectile> multiShoot() {
+		ArrayList<Projectile> bullets = new ArrayList<Projectile>();
+
+		double bulletXShift = this.width * Math.cos(Math.PI * (this.getAngle()) / 180) / 2;
+		double bulletYShift = this.width * Math.sin(Math.PI * (this.getAngle()) / 180) / 2;
+
+		Projectile upperBullet = new Projectile(this.getCenterX() + bulletXShift, this.getCenterY() + bulletYShift, 0,
+				0, 2, 10);
+		Projectile lowerBullet = new Projectile(this.getCenterX() - bulletXShift, this.getCenterY() - bulletYShift, 0,
+				0, 2, 10);
+
+		upperBullet.setCenter(this.getCenterX() + bulletXShift, this.getCenterY() + bulletYShift);
+		lowerBullet.setCenter(this.getCenterX() - bulletXShift, this.getCenterY() - bulletYShift);
+
+		upperBullet.rotate(this.getAngle() - 3);
+		lowerBullet.rotate(this.getAngle() + 3);
+
+		upperBullet.setVelocity(90 - this.getAngle() + 3, 5);
+		lowerBullet.setVelocity(90 - this.getAngle() - 3, 5);
+
+		bullets.add(upperBullet);
+		bullets.add(lowerBullet);
+
+		return bullets;
+
 	}
 
 	public boolean canShoot() {
@@ -85,10 +113,6 @@ public class Player extends Entity {
 		}
 	}
 
-	public void countCollideTimer() {
-		collideTimer++;
-	}
-
 	public boolean isHittingAsteroid(Asteroid a) {
 
 		if (this.getDistanceTo(a.getCenterX(), a.getCenterY(), (int) this.getLeftSideX(),
@@ -110,4 +134,16 @@ public class Player extends Entity {
 		return false;
 	}
 
+	public boolean multiShotActivated() {
+
+		if (this.shotCounter > 500) {
+			this.shotCounter = 0;
+			return false;
+		}
+		return true;
+	}
+
+	public void count() {
+		this.shotCounter++;
+	}
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import entities.Asteroid;
 import entities.Player;
-import entities.powerups.Powerup;
+import entities.powerups.Multishot;
 import entities.powerups.Regeneration;
 
 public class SpaceGame {
@@ -45,7 +45,8 @@ public class SpaceGame {
 
 	}
 
-	public void checkCollision(ArrayList<Asteroid> asteroids, ArrayList<Powerup> powerups) {
+	public void checkCollision(ArrayList<Asteroid> asteroids, ArrayList<Multishot> multis,
+			ArrayList<Regeneration> regens) {
 		if (playerOne.isHitting(playerTwo) || playerOne.isHitting(playerTwo)) {
 
 			collidePlayer(playerOne);
@@ -63,15 +64,26 @@ public class SpaceGame {
 			}
 		}
 
-		for (int a = 0; a < powerups.size(); a++) {
-			Regeneration r = (Regeneration) powerups.get(a);
+		for (int a = 0; a < regens.size(); a++) {
+			Regeneration r = regens.get(a);
 			if (playerOne.isHitting(r)) {
 				r.healPlayer(playerOne);
-				powerups.remove(r);
+				regens.remove(r);
 			}
 			if (playerTwo.isHitting(r)) {
 				r.healPlayer(playerTwo);
-				powerups.remove(r);
+				regens.remove(r);
+			}
+		}
+		for (int a = 0; a < multis.size(); a++) {
+			Multishot m = multis.get(a);
+			if (playerOne.isHitting(m)) {
+				playerOne.setPowerup(1);
+				multis.remove(m);
+			}
+			if (playerTwo.isHitting(m)) {
+				playerTwo.setPowerup(1);
+				multis.remove(m);
 			}
 		}
 	}

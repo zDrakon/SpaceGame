@@ -4,20 +4,11 @@ import entities.Entity;
 import processing.core.PApplet;
 
 public class Powerup extends Entity {
-	protected int duration;
-	protected String color;
+	protected double duration;
 
-	public Powerup(PApplet app, double x, double y, double width, double height, int duration, String color) {
-		super(app, x, y, 0, 0, 0, 0, width, height);
-		this.duration = duration;
-	}
-
-	public int getDuration() {
-		return duration;
-	}
-
-	public void setDuration(int duration) {
-		this.duration = duration;
+	public Powerup(PApplet p, double x, double y, double xspeed, double yspeed, double xacceleration,
+			double yacceleration) {
+		super(p, x, y, xspeed, yspeed, xacceleration, yacceleration);
 	}
 
 }
